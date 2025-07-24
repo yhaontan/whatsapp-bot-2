@@ -1,3 +1,4 @@
+const { sendMemberStatsWithChart } = require('./stats/memberChart');
 const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const fs = require('fs');
 const path = require('path');
@@ -96,11 +97,40 @@ client.on('disconnected', reason => {
   console.log('🚫 נותק, מנסה להתחבר שוב...');
   client.initialize();
 });
+// האזנה להצטרפות לקבוצה
+client.on('group_join', async (notification) => {
+  const groupName = notification.chat.name;
+  const user = notification.recipientIds?.[0] || notification.id.participant;
+  logGroupEvent(groupName, user, 'join');
+});
+
+// האזנה ליציאה מקבוצה
+client.on('group_leave', async (notification) => {
+  const groupName = notification.chat.name;
+  const user = notification.recipientIds?.[0] || notification.id.participant;
+  logGroupEvent(groupName, user, 'leave');
+});
 
 // שגיאות כלליות
 client.on('auth_failure', msg => {
   writeLog('❌ כשל באימות: ' + msg);
 });
+const membersStatsPath = path.join(__dirname, 'members-stats.json');
+let memberStats = {};
+if (fs.existsSync(membersStatsPath)) {
+  memberStats = JSON.parse(fs.readFileSync(membersStatsPath, 'utf8'));
+}
+
+function logGroupEvent(groupName, user, type) {
+  const day = new Date().toISOString().slice(0, 10);
+  memberStats[day] = memberStats[day] || {};
+  memberStats[day][groupName] = memberStats[day][groupName] || { joined: [], left: [] };
+
+  if (type === 'join') memberStats[day][groupName].joined.push(user);
+  else if (type === 'leave') memberStats[day][groupName].left.push(user);
+
+  fs.writeFileSync(membersStatsPath, JSON.stringify(memberStats, null, 2));
+}
 
 process.on('uncaughtException', err => {
   writeLog(`❌ שגיאה לא מטופלת: ${err.message}`);
@@ -145,6 +175,11 @@ client.on('message_create', async msg => {
   if (!config.AUTHORIZED_SENDERS.includes(senderPhone)) return;
 
   if (chat.name !== config.SHIGUR_GROUP) return;
+  if (msg.body.trim() === 'סטטיסטיקת חברים') {
+  await msg.reply('⏳ אוסף נתוני חברים...');
+  await sendMemberStatsWithChart(client, config.SHIGUR_GROUP, 'daily');
+  return;
+}
 
   if (msg.hasMedia) {
     const media = await msg.downloadMedia();
@@ -181,3 +216,6 @@ setInterval(() => {
 
 // הפעלה
 client.initialize();
+schedule.scheduleJob('0 22 * * 6', () => {
+  sendMemberStatsWithChart(client, config.SHIGUR_GROUP, 'weekly');
+});
