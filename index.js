@@ -1,4 +1,3 @@
-const { sendMemberStatsWithChart } = require('./stats/memberChart');
 const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const fs = require('fs');
 const path = require('path');
