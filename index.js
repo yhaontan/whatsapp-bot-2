@@ -143,9 +143,11 @@ process.on('unhandledRejection', reason => {
 // שליחה
 async function sendMessageToTargets(content, isMedia, senderPhone) {
   const allChats = await client.getChats();
-  const targets = allChats.filter(c =>
-    c.isGroup &&
-    (config.TARGET_GROUP_NAMES.includes(c.name))
+ const targets = allChats.filter(c =>
+  (c.isGroup || c.isBroadcast || c.isChannel) &&
+  config.TARGET_GROUP_NAMES.includes(c.name)
+);
+
   );
   let allSuccess = true;
 
