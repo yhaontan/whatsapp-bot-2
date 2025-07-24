@@ -192,7 +192,9 @@ client.on('message_create', async msg => {
     fs.writeFileSync(filePath, media.data, 'base64');
     const mediaMsg = MessageMedia.fromFilePath(filePath);
 
-    const result = await sendMessageToTargets({ media: mediaMsg, caption: config.SIGNATURE }, true, senderPhone);
+    const caption = (msg.caption || '') + '\n' + config.SIGNATURE;
+const result = await sendMessageToTargets({ media: mediaMsg, caption: caption.trim() }, true, senderPhone);
+    
     fs.unlinkSync(filePath);
     msg.reply(result ? '✅ הופץ בהצלחה' : '⚠️ חלק נכשל');
   } else {
