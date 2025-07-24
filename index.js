@@ -190,10 +190,12 @@ client.on('message_create', async msg => {
     const ext = mime.extension(media.mimetype);
     const filePath = `temp.${ext}`;
     fs.writeFileSync(filePath, media.data, 'base64');
-    const mediaMsg = MessageMedia.fromFilePath(filePath);
+  const mediaMsg = new MessageMedia(media.mimetype, media.data, `media.${ext}`);
 
-    const caption = (msg.caption || '') + '\n' + config.SIGNATURE;
+const caption = (msg.caption || msg.body || '') + '\n' + config.SIGNATURE;
+
 const result = await sendMessageToTargets({ media: mediaMsg, caption: caption.trim() }, true, senderPhone);
+
     
     fs.unlinkSync(filePath);
     msg.reply(result ? '✅ הופץ בהצלחה' : '⚠️ חלק נכשל');
