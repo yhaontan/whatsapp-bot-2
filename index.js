@@ -115,37 +115,68 @@ function phoneToId(phone) {
 
 // ----------- ניהול QR-ים מרובים -----------
 
-const QR_ACCOUNTS = config.QR_ACCOUNTS || ['main'];
-const bots = {};
-const readyBots = [];
-const latestQrAscii = {};
-let lastQRIndex = -1; // בשביל איזון רנדומלי
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const qrcode = require('qrcode-terminal');
 
-for (const session of QR_ACCOUNTS) {
-  bots[session] = new Client({
-    authStrategy: new LocalAuth({ clientId: session }),
-    puppeteer: {
-      headless: true,
-      executablePath: '/snap/bin/chromium',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+const latestQrAscii = {}; // מחזיק QRים לפי שם סשן
+const clients = {};
+const sessionNames = ['main', 'main 2']; // 🟢 כאן תוסיף כמה סשנים שאתה רוצה
+
+// יצירת כל הסשנים
+sessionNames.forEach(sessionName => {
+  const client = new Client({
+    authStrategy: new LocalAuth({ clientId: sessionName }),
+    puppeteer: { headless: true },
+  });
+
+  // אחסון הלקוח
+  clients[sessionName] = client;
+
+  // שמירת ה־QR בקונסול וב־זיכרון
+  client.on('qr', qr => {
+    const ascii = qrcode.generate(qr, { small: true });
+    console.log(`🔑 [${sessionName}] QR:\n`, ascii);
+    latestQrAscii[sessionName] = ascii;
+  });
+
+  // התחברות
+  client.on('ready', () => {
+    console.log(`✅ [${sessionName}] מוכן!`);
+  });
+
+  client.initialize();
+});
+
+// ============================
+// קוד התגובה על הודעה: שלח QR לפי סשן
+// ============================
+
+// זה דוגמה עם הסשן הראשי 'main'. אתה יכול לשלב את זה בתוך כל listener שלך
+clients['main'].on('message', async msg => {
+  const sender = msg.from;
+  const text = msg.body?.trim();
+
+  if (text === '8') {
+    const session = getNextReadyQR();
+    const ascii = latestQrAscii[session];
+
+    if (ascii) {
+      await msg.reply(`📱 סרוק את ה-QR הבא להתחברות לחשבון (${session}):\n\n\`\`\`\n${ascii}\n\`\`\``);
+    } else {
+      await msg.reply('❌ עדיין לא נוצר QR – נסה שוב בעוד רגע.');
     }
-  });
+  }
+});
 
-  bots[session].on('qr', qr => {
-    console.log(`\n🔑 סרוק QR עבור החשבון: ${session}`);
-    qrcode.generate(qr, { small: true }, ascii => latestQrAscii[session] = ascii);
-  });
-
-  bots[session].on('ready', async () => {
-    if (!readyBots.includes(session)) readyBots.push(session);
-    console.log(`✅ חשבון ${session} מוכן`);
-    writeLog(`חשבון ${session} מוכן`);
-
+// מחזיר שם של סשן שיש לו QR מוכן
+function getNextReadyQR() {
+  return Object.keys(latestQrAscii)[0] || null;
+}
     // --- הדפסת כל שמות הקבוצות לחשבון זה ---
     const chats = await bots[session].getChats();
     console.log('----- כל שמות הקבוצות בוואטסאפ (debug) -----');
     chats.filter(c => c.isGroup).forEach(g => console.log('"' + g.name + '"'));
-  });
+  ;
 
 
   bots[session].on('disconnected', reason => {
@@ -160,7 +191,7 @@ for (const session of QR_ACCOUNTS) {
   });
 
   bots[session].initialize();
-}
+
 
 function getNextReadyQR() {
   if (readyBots.length === 0) return null;
@@ -223,7 +254,9 @@ const menuText = `
 לפעולה: כתוב רק את המספר 👆
 `;
 
-
+client.on('message', async msg => {
+  console.log('📨 קיבלתי הודעה!');
+});
 // ----------- טיפול בפקודות ובמצבים (תפריט מרכזי) -----------
 
 for (const qr of QR_ACCOUNTS) {
