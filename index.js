@@ -37,7 +37,7 @@ fs.watchFile(path.join(__dirname, 'config.json'), () => {
 
 // ----------- לוגים -----------
 function writeLog(text) {
-  const line = `${new Date().toISOString()} | ${text}\n`;  // תוקן עם באקטיקים
+  const line = ${new Date().toISOString()} | ${text}\n;
   fs.appendFileSync('bot.log', line);
   console.log('[LOG]', text);
 }
