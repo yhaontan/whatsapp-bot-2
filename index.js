@@ -37,7 +37,7 @@ fs.watchFile(path.join(__dirname, 'config.json'), () => {
 
 // ----------- לוגים -----------
 function writeLog(text) {
-const line = `${new Date().toISOString()} | ${text}\n`;
+  const line = `${new Date().toISOString()} | ${text}\n`;  // תוקן עם באקטיקים
   fs.appendFileSync('bot.log', line);
   console.log('[LOG]', text);
 }
@@ -463,3 +463,29 @@ schedule.scheduleJob({ hour: 10, minute: 0, dayOfWeek: 0 }, async () => {
 
 // -- הפעלה אוטומטית! --
 console.log('הבוט נטען...');
+
+// מערכת תגובות משופרת
+async function reactWithStatus(msg, result, details) {
+  // הוסף תגובת אמוג'י בסיסית
+  await msg.react(result.success ? '✅' : '❌');
+  
+  // שלח הודעת מצב מפורטת (ניתן לכיבוי בהגדרות)
+  if (config.DETAILED_RESPONSES) {
+    const status = result.success ? 
+      `✅ *הופץ בהצלחה*\n${result.totalGroups} קבוצות קיבלו את ההודעה` :
+      `⚠️ *התראה*\n✅ הופץ: ${result.successGroups.length} קבוצות\n❌ נכשל: ${result.failedGroups.length} קבוצות`;
+    
+    // הוסף פרטים ספציפיים אם יש כאלה
+    if (details) {
+      await msg.reply(status + "\n\n" + details);
+    } else {
+      await msg.reply(status);
+    }
+  }
+  
+  // אם רלוונטי - שלח סטטיסטיקה מהירה
+  if (result.success && config.SEND_QUICK_STATS) {
+    const quickStats = getQuickStats(result.startTime);
+    await msg.reply(quickStats);
+  }
+}
