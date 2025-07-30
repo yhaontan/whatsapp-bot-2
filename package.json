@@ -1,9 +1,14 @@
 {
   "name": "whatsapp-bot",
-  "version": "1.0.0",
+  "version": "3.0.0",
+  "description": "Advanced Multi-QR WhatsApp Bot with Anti-Block system",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "node test_advanced_features.js",
+    "dev": "node --inspect index.js",
+    "check": "node test_advanced_features.js && echo '✅ All systems ready!'",
+    "setup": "./start.sh"
   },
   "dependencies": {
     "fs-extra": "^11.2.0",
@@ -13,8 +18,21 @@
     "qrcode-terminal": "^0.12.0",
     "whatsapp-web.js": "^1.31.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "keywords": [
+    "whatsapp",
+    "bot",
+    "multi-qr",
+    "anti-block",
+    "automation",
+    "messaging"
+  ],
+  "author": "yhaontan",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yhaontan/whatsapp-bot-2.git"
+  }
 }
