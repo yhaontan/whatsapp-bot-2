@@ -1,0 +1,103 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# WhatsApp sessions and cache
+.wwebjs_cache/
+.wwebjs_auth/
+sessions/
+**/RemoteAuth-*
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Browser data
+chrome-data/
+user-data-dir/
+
+# Media files
+media/
+uploads/
+downloads/
+
+# Backup files
+backups/
+*.backup
+*.bak
+
+# Configuration sensitive files (keep template)
+# config.json  # Uncomment this if you want to exclude config from git
+
+# Statistics and data files
+stats.json
+analytics.json
+usage.json
+
+# Reports
+reports/
+*.report
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Package managers
+package-lock.json
+yarn.lock
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Account specific data
+accounts/
+management/
+
+# Chrome/Chromium related
+.config/
+.cache/
+
+# Runtime files
+*.pid
+*.seed
+*.pid.lock
+.grunt
+
+# Coverage directory used by tools like istanbul
+coverage/
+.nyc_output
+
+# Test files
+test-results/
+test-output/
+
+# Build outputs
+dist/
+build/
+out/
+
+# Memory dumps
+*.heapsnapshot

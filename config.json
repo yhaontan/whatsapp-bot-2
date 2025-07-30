@@ -1,8 +1,16 @@
                                                                           
 {
   "QR_ACCOUNTS": [
-    "main"
+    "main_account",
+    "backup_account_1"
   ],
+  "ACCOUNT_SETTINGS": {
+    "AUTO_RECONNECT": true,
+    "RECONNECT_DELAY": 30000,
+    "MAX_RECONNECT_ATTEMPTS": 10,
+    "HEALTH_CHECK_INTERVAL": 60000,
+    "QR_TIMEOUT": 120000
+  },
   "TARGET_GROUP_NAMES": [
     "555 news il                             קבוצה 23",
     "555 news il                                   קבוצה 20",
@@ -18,16 +26,68 @@
     "555 news il                                      קבוצה 21",
     "555 news il                                   קבוצה 22"
   ],
-  "SHIGUR_GROUP": "ניסוי 2",
+  "TARGET_CHANNELS": [
+    "555 news il - ערוץ ראשי",
+    "555 news il - ערוץ עדכונים",
+    "555 news il - ערוץ חדשות",
+    "555 news il - ערוץ דחוף"
+  ],
+  "SHIGUR_GROUP": "שיגור 555 news il",
+  "MANAGEMENT_GROUP": "ניהול 555 news il",
+  "SUPER_ADMINS": [
+    "120363419856833560",
+    "18520503017489"
+  ],
+  "REGULAR_ADMINS": [
+    "0529558056",
+    "0525486144"
+  ],
   "AUTHORIZED_SENDERS": [
     "120363419856833560",
     "18520503017489",
     "0529558056",
     "0525486144"
   ],
-  "ADMINS": [
-    "120363419856833560",
-    "18520503017489"
-  ]
+  "ALLOW_ALL_FROM_SHIGUR": true,
+  "MANAGEMENT_GROUP_ONLY_ADMINS": true,
+  "ANTI_BLOCK_SYSTEM": {
+    "ENABLED": true,
+    "SMART_ROTATION": true,
+    "LOAD_BALANCING": "intelligent",
+    "ACCOUNT_COOLDOWN": 120000,
+    "MIN_DELAY_BETWEEN_SENDS": 3000,
+    "MAX_DELAY_BETWEEN_SENDS": 12000,
+    "RANDOMIZE_DELAYS": true,
+    "ADAPTIVE_DELAYS": true,
+    "MESSAGE_LIMITS": {
+      "PER_MINUTE": 5,
+      "PER_HOUR": 80,
+      "PER_DAY": 800
+    },
+    "COOLDOWN_AFTER_LIMIT": 300000,
+    "RETRY_FAILED_MESSAGES": true,
+    "MAX_RETRIES": 3,
+    "RETRY_DELAY": 60000
+  },
+  "PERFORMANCE": {
+    "CONCURRENT_SENDS": 2,
+    "BATCH_SIZE": 3,
+    "SEND_DELAY": 1000,
+    "CHANNELS_DELAY": 2000,
+    "PARALLEL_CHANNELS": 2,
+    "QUEUE_PROCESSING_INTERVAL": 5000
+  },
+  "TELEGRAM_ENABLED": false,
+  "TELEGRAM_BOT_TOKEN": "YOUR_BOT_TOKEN_HERE",
+  "TELEGRAM_CHANNELS": [],
+  "TELEGRAM_GROUPS": [],
+  "TELEGRAM_ADMINS": [],
+  "TELEGRAM_DELAY": 2000,
+  "SIGNATURE": "\n\n📢 הצטרפו לקבלת עדכונים נוספים:\nhttps://chat.whatsapp.com/HOOrIZihtW9BmtfiXvM9WW",
+  "LOG_LEVEL": "DEBUG",
+  "SAVE_LOGS_TO_FILE": true,
+  "AUTO_SAVE_CONFIG": true,
+  "SEND_TO_CHANNELS": true,
+  "DETAILED_STATISTICS": true
 }
 
